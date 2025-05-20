@@ -1,4 +1,4 @@
-import java.util.Date;
+package Core;
 
 public class Grade {
     private int grade;

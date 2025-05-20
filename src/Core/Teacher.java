@@ -1,3 +1,5 @@
+package Core;
+
 public class Teacher extends Person {
     private double salary;
 

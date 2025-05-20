@@ -1,3 +1,5 @@
+package Core;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +21,12 @@ public class SchoolManager {
 
     // Metody związane z klasami
     public void createClass(String name, Teacher supervisingTeacher) {
-        Class newClass = new Class(name, new ArrayList<>(), supervisingTeacher);
+        Core.Class newClass = new Core.Class(name, new ArrayList<>(), supervisingTeacher);
         school.addClass(newClass);
     }
 
     public void removeClassByName(String className) {
-        List<Class> classes = school.getClasses();
+        List<Core.Class> classes = school.getClasses();
         for (int i = 0; i < classes.size(); i++) {
             if (classes.get(i).getName().equals(className)) {
                 school.removeClass(classes.get(i));
@@ -34,8 +36,8 @@ public class SchoolManager {
         System.out.println("Klasa o nazwie " + className + " nie istnieje.");
     }
 
-    public Class getClassByName(String className) {
-        for (Class cls : school.getClasses()) {
+    public Core.Class getClassByName(String className) {
+        for (Core.Class cls : school.getClasses()) {
             if (cls.getName().equals(className)) {
                 return cls;
             }
@@ -43,7 +45,7 @@ public class SchoolManager {
         return null;
     }
 
-    public List<Class> getAllClasses() {
+    public List<Core.Class> getAllClasses() {
         return school.getClasses();
     }
 
@@ -68,7 +70,7 @@ public class SchoolManager {
 
     // Metody związane z uczniami
     public void enrollStudent(String name, String surname, int age, String peselNumber, String className) {
-        Class targetClass = getClassByName(className);
+        Core.Class targetClass = getClassByName(className);
         if (targetClass != null) {
             Student newStudent = new Student(name, surname, age, peselNumber, new ArrayList<>());
             targetClass.addStudent(newStudent);
@@ -78,7 +80,7 @@ public class SchoolManager {
     }
 
     public void removeStudent(String peselNumber, String className) {
-        Class targetClass = getClassByName(className);
+        Core.Class targetClass = getClassByName(className);
         if (targetClass != null) {
             Student student = targetClass.getStudentByPeselNumber(peselNumber);
             if (student != null) {
@@ -92,8 +94,8 @@ public class SchoolManager {
     }
 
     public void transferStudent(String peselNumber, String fromClassName, String toClassName) {
-        Class fromClass = getClassByName(fromClassName);
-        Class toClass = getClassByName(toClassName);
+        Core.Class fromClass = getClassByName(fromClassName);
+        Core.Class toClass = getClassByName(toClassName);
 
         if (fromClass == null) {
             System.out.println("Klasa źródłowa o nazwie " + fromClassName + " nie istnieje.");
@@ -124,7 +126,7 @@ public class SchoolManager {
             return;
         }
 
-        Class targetClass = getClassByName(className);
+        Core.Class targetClass = getClassByName(className);
         if (targetClass == null) {
             System.out.println("Klasa o nazwie " + className + " nie istnieje.");
             return;
@@ -137,7 +139,7 @@ public class SchoolManager {
 
     public void addGradeToStudent(String studentPesel, String className, String subjectName,
                                   int grade, int weight, String description, String teacherPesel) {
-        Class targetClass = getClassByName(className);
+        Core.Class targetClass = getClassByName(className);
         if (targetClass == null) {
             System.out.println("Klasa o nazwie " + className + " nie istnieje.");
             return;
@@ -168,7 +170,7 @@ public class SchoolManager {
     }
 
     public double getStudentAverageGrade(String studentPesel, String className) {
-        Class targetClass = getClassByName(className);
+        Core.Class targetClass = getClassByName(className);
         if (targetClass == null) {
             System.out.println("Klasa o nazwie " + className + " nie istnieje.");
             return -1;
@@ -194,7 +196,7 @@ public class SchoolManager {
     }
 
     public double getClassAverageGrade(String className, String subjectName) {
-        Class targetClass = getClassByName(className);
+        Core.Class targetClass = getClassByName(className);
         if (targetClass == null) {
             System.out.println("Klasa o nazwie " + className + " nie istnieje.");
             return -1;
@@ -205,9 +207,9 @@ public class SchoolManager {
 
     // Metody pomocnicze do wyświetlania informacji
     public void displayAllClasses() {
-        List<Class> classes = school.getClasses();
+        List<Core.Class> classes = school.getClasses();
         System.out.println("Klasy w szkole " + school.getName() + ":");
-        for (Class cls : classes) {
+        for (Core.Class cls : classes) {
             System.out.println("- " + cls.getName() + " (wychowawca: " +
                     cls.getSupervisingTeacher().getName() + " " +
                     cls.getSupervisingTeacher().getSurname() + ")");
@@ -215,7 +217,7 @@ public class SchoolManager {
     }
 
     public void displayClassDetails(String className) {
-        Class targetClass = getClassByName(className);
+        Core.Class targetClass = getClassByName(className);
         if (targetClass == null) {
             System.out.println("Klasa o nazwie " + className + " nie istnieje.");
             return;
@@ -270,5 +272,14 @@ public class SchoolManager {
 
         double averageGrade = getStudentAverageGrade(studentPesel, className);
         System.out.println("Średnia ogólna: " + String.format("%.2f", averageGrade));
+    }
+
+    public Teacher getTeacherByPesel(String peselNumber) {
+        for (Teacher teacher : school.getTeachers()) {
+            if (teacher.getPeselNumber().equals(peselNumber)) {
+                return teacher;
+            }
+        }
+        return null;
     }
 }

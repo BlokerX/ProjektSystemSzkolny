@@ -1,14 +1,16 @@
+package Core;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class School {
     private String name;
-    private List<Class> classes;
+    private List<Core.Class> classes;
     private List<Teacher> teachers;
 
     private School(String name) {
         this.name = name;
-        this.classes = new ArrayList<Class>();
+        this.classes = new ArrayList<Core.Class>();
         this.teachers = new ArrayList<Teacher>();
     }
 
@@ -17,7 +19,7 @@ public class School {
         return school;
     }
 
-    public void addClass(Class _class) {
+    public void addClass(Core.Class _class) {
         this.classes.add(_class);
     }
 
@@ -25,7 +27,7 @@ public class School {
         this.teachers.add(_teacher);
     }
 
-    public void removeClass(Class _class){
+    public void removeClass(Core.Class _class){
         this.classes.remove(_class);
     }
 
