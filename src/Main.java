@@ -5,81 +5,130 @@ import Core.Teacher;
 import GuiApp.MainFrame;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-//        Scanner scanner = new Scanner(System.in);
-//        //region Console
-//        // Inicjalizacja podstawowych danych szkoły
-//        School school = School.createSchool("Liceum im. Marii Skłodowskiej-Curie");
-//        SchoolManager manager = new SchoolManager(school);
-//
-//        // Wstępne załadowanie przykładowych danych
-//        initializeSchoolData(manager);
-//
-//        boolean running = true;
-//        while (running) {
-//            displayMenu();
-//            System.out.print("Wybierz opcję: ");
-//
-//            try {
-//                int choice = Integer.parseInt(scanner.nextLine());
-//
-//                switch (choice) {
-//                    case 1:
-//                        displaySchoolInfo(manager);
-//                        break;
-//                    case 2:
-//                        manageClasses(scanner, manager);
-//                        break;
-//                    case 3:
-//                        manageTeachers(scanner, manager);
-//                        break;
-//                    case 4:
-//                        manageStudents(scanner, manager);
-//                        break;
-//                    case 5:
-//                        manageSubjects(scanner, manager);
-//                        break;
-//                    case 6:
-//                        manageGrades(scanner, manager);
-//                        break;
-//                    case 7:
-//                        displayStatistics(scanner, manager);
-//                        break;
-//                    case 0:
-//                        running = false;
-//                        System.out.println("Zamykanie systemu...");
-//                        break;
-//                    default:
-//                        System.out.println("Nieprawidłowa opcja. Spróbuj ponownie.");
-//                }
-//            } catch (NumberFormatException e) {
-//                System.out.println("Błąd: Wprowadź liczbę.");
-//            }
-//
-//            // Pauza przed powrotem do menu
-//            if (running) {
-//                System.out.println("\nNaciśnij ENTER, aby kontynuować...");
-//                scanner.nextLine();
-//            }
-//        }
-//
-//        scanner.close();
-//        //endregion
+        System.out.println("============================");
+        System.out.println("Wybierz tryb uruchomienia: ");
+        System.out.println("1. Tryb okienkowy");
+        System.out.println("2. Tryb konsolowy");
+        System.out.println("============================");
+        System.out.print("Numer trybu: ");
+        Scanner scanner = new Scanner(System.in);
+        String x = scanner.nextLine();
+        switch (x)
+        {
+            case "1":
+                System.out.println("1.Tryb okienkowy");
+                //region Swing app
+                SwingUtilities.invokeLater(() -> {
+                    MainFrame mainFrame = new MainFrame();
+                    mainFrame.setVisible(true);
+                });
 
-        //region Swing app
-        SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame();
-            mainFrame.setVisible(true);
+                //endregion
+                break;
 
-            // Nowa metoda do wyświetlania panelu statystyk
-            showStatisticsPanel(mainFrame);
-        });
+            case "2":
+                System.out.println("2.Tryb konsolowy");//region Console
 
-        //endregion
+                // Inicjalizacja podstawowych danych szkoły
+                School school;
+                SchoolManager manager;
+
+                // Próba wczytania danych przy starcie
+                try {
+                    manager = SchoolManager.loadFromFile("school_data.ser");
+
+                    school = manager.getSchool();
+
+                    System.out.println("Dane wczytane pomyślnie!");
+
+                } catch (IOException | ClassNotFoundException e) {
+
+                    // Jeśli plik nie istnieje, utwórz nową szkołę z danymi testowymi
+
+                    school = School.createSchool("Liceum im. Marii Skłodowskiej-Curie");
+
+                    manager = new SchoolManager(school);
+
+                    initializeSchoolData(manager);
+
+                    System.out.println("Utworzono nową szkołę z danymi testowymi");
+                }
+
+
+
+                // Wstępne załadowanie przykładowych danych
+                initializeSchoolData(manager);
+
+                boolean running = true;
+                while (running) {
+                    displayMenu();
+                    System.out.print("Wybierz opcję: ");
+
+                    try {
+                        int choice = Integer.parseInt(scanner.nextLine());
+
+                        switch (choice) {
+                            case 1:
+                                displaySchoolInfo(manager);
+                                break;
+                            case 2:
+                                manageClasses(scanner, manager);
+                                break;
+                            case 3:
+                                manageTeachers(scanner, manager);
+                                break;
+                            case 4:
+                                manageStudents(scanner, manager);
+                                break;
+                            case 5:
+                                manageSubjects(scanner, manager);
+                                break;
+                            case 6:
+                                manageGrades(scanner, manager);
+                                break;
+                            case 7:
+                                displayStatistics(scanner, manager);
+                                break;
+                            case 8:
+                                saveData(manager);
+                                break;
+                            case 0:
+                                running = false;
+                                System.out.println("Zamykanie systemu...");
+                                break;
+                            default:
+                                System.out.println("Nieprawidłowa opcja. Spróbuj ponownie.");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Błąd: Wprowadź liczbę.");
+                    }
+
+                    // Pauza przed powrotem do menu
+                    if (running) {
+                        System.out.println("\nNaciśnij ENTER, aby kontynuować...");
+                        scanner.nextLine();
+                    }
+                }
+
+                scanner.close();
+                //endregion
+                break;
+        }
+    }
+
+    private static void saveData(SchoolManager manager) {
+        try {
+            manager.saveToFile("school_data.ser");
+            System.out.println("Dane zapisane pomyślnie!");
+        } catch (IOException e) {
+            System.out.println("Błąd zapisu danych: " + e.getMessage());
+        }
     }
 
     private static void showStatisticsPanel(MainFrame mainFrame) {
@@ -112,6 +161,7 @@ public class Main {
         System.out.println("5. Zarządzaj przedmiotami");
         System.out.println("6. Zarządzaj ocenami");
         System.out.println("7. Wyświetl statystyki");
+        System.out.println("8. Zapisz zmiany");
         System.out.println("0. Wyjście");
         System.out.println("==============================================");
     }
