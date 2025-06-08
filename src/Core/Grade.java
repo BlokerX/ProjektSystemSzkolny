@@ -1,6 +1,8 @@
 package Core;
 
-public class Grade {
+import java.io.Serializable;
+
+public class Grade  implements Serializable {
     private int grade;
     private int weight;
     private String description;

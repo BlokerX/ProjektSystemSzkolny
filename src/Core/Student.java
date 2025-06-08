@@ -1,8 +1,9 @@
 package Core;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Student extends Person {
+public class Student extends Person implements Serializable {
     private List<Subject> subjects;
 
     public Student(String name, String surname, int age, String peselNumber, List<Subject> subjects) {

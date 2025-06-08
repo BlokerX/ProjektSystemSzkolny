@@ -1,13 +1,29 @@
 package Core;
 
+import java.io.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SchoolManager {
+public class SchoolManager implements Serializable {
     private School school;
 
     public SchoolManager(School school) {
         this.school = school;
+    }
+
+    // Dodane metody do serializacji
+    public void saveToFile(String filename) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(this.school);
+        }
+    }
+
+    public static SchoolManager loadFromFile(String filename) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            School school = (School) ois.readObject();
+            return new SchoolManager(school);
+        }
     }
 
     // Metody związane ze szkołą
@@ -281,5 +297,9 @@ public class SchoolManager {
             }
         }
         return null;
+    }
+
+    public School getSchool() {
+        return school;
     }
 }

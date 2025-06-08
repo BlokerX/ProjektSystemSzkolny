@@ -1,8 +1,9 @@
 package Core;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Class {
+public class Class implements Serializable {
     private String name;
     private List<Student> students;
     private Teacher supervisingTeacher;

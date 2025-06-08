@@ -7,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.List;
 
 public class MainFrame extends JFrame {
@@ -24,16 +25,27 @@ public class MainFrame extends JFrame {
     private GradeManagementPanel gradeManagementPanel;
     public StatisticsPanel statisticsPanel;
 
+    private static final String DATA_FILE = "school_data.ser";
+
+
     public MainFrame() {
         setTitle("System Zarządzania Szkołą");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
 
-        // Inicjalizacja szkoły i menedżera
-        school = School.createSchool("Liceum im. Marii Skłodowskiej-Curie");
-        manager = new SchoolManager(school);
-        initializeSchoolData(manager);
+        // Próba wczytania danych przy starcie
+        try {
+            manager = SchoolManager.loadFromFile(DATA_FILE);
+            school = manager.getSchool();
+            JOptionPane.showMessageDialog(this, "Dane wczytane pomyślnie!");
+        } catch (IOException | ClassNotFoundException e) {
+            // Jeśli plik nie istnieje, utwórz nową szkołę z danymi testowymi
+            school = School.createSchool("Liceum im. Marii Skłodowskiej-Curie");
+            manager = new SchoolManager(school);
+            initializeSchoolData(manager);
+            JOptionPane.showMessageDialog(this, "Utworzono nową szkołę z danymi testowymi");
+        }
 
         // Ustawienie głównego layoutu
         setLayout(new BorderLayout());
@@ -57,6 +69,18 @@ public class MainFrame extends JFrame {
 
         // Pokazanie domyślnego panelu informacyjnego
         cardLayout.show(contentPanel, "SchoolInfo");
+
+        // Dodanie opcji zapisu w menu
+        addMenuButton(menuPanel, "Zapisz dane", e -> saveData());
+    }
+
+    private void saveData() {
+        try {
+            manager.saveToFile(DATA_FILE);
+            JOptionPane.showMessageDialog(this, "Dane zapisane pomyślnie!");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Błąd zapisu danych: " + e.getMessage());
+        }
     }
 
     private JPanel createTitlePanel() {

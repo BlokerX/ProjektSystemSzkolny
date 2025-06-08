@@ -1,9 +1,10 @@
 package Core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class School {
+public class School implements Serializable {
     private String name;
     private List<Core.Class> classes;
     private List<Teacher> teachers;

@@ -1,6 +1,8 @@
 package Core;
 
-public class Teacher extends Person {
+import java.io.Serializable;
+
+public class Teacher extends Person implements Serializable {
     private double salary;
 
     public Teacher(String name, String surname, int age, String peselNumber, double salary) {
